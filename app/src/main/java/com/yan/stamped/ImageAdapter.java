@@ -2,6 +2,7 @@ package com.yan.stamped;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.provider.ContactsContract;
 import android.support.v7.internal.view.menu.ListMenuItemView;
 import android.view.Gravity;
 import android.view.View;
@@ -18,9 +19,11 @@ import android.widget.TextView;
  */
 public class ImageAdapter extends BaseAdapter {
         private Context mContext;
+        private DatabaseHandler db;
 
         public ImageAdapter(Context c) {
             mContext = c;
+            db = new DatabaseHandler(mContext);
         }
 
         public int getCount() {
@@ -65,9 +68,6 @@ public class ImageAdapter extends BaseAdapter {
             //imageView.setImageResource(mThumbIds[position]);
             return LL;
         }
-    private Integer[] mThumbIds = {
-            R.drawable.ic_launcher, R.drawable.abc_btn_check_to_on_mtrl_000,
-            R.drawable.com_shamanland_fab_circle_normal, R.drawable.ic_launcher,
-    };
+    private String[] mThumbIds = {"1","2"};
 }
 

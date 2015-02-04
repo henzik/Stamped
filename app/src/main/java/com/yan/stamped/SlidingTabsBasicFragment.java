@@ -44,12 +44,6 @@ public class SlidingTabsBasicFragment extends Fragment {
     static final String LOG_TAG = "SlidingTabsBasicFragment";
     SchemesFragment SCHEMES = new SchemesFragment();
     private FragmentActivity myContext;
-    static final String[] numbers = new String[] {
-            "A", "B", "C", "D", "E",
-            "F", "G", "H", "I", "J",
-            "K", "L", "M", "N", "O",
-            "P", "Q", "R", "S", "T",
-            "U", "V", "W", "X", "Y", "Z"};
 
     /**
      * A custom {@link android.support.v4.view.ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -195,8 +189,6 @@ public class SlidingTabsBasicFragment extends Fragment {
 
         public void INITIATE(View v){
             myGrid = (GridView) v.findViewById(R.id.gweed);
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                    android.R.layout.simple_list_item_1, numbers);
 
             myGrid.setAdapter(new ImageAdapter(getActivity()));
 

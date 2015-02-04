@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewAnimator;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,7 +33,7 @@ public class Home extends ActionBarActivity {
         GridLayout myGrid;
         View myview;
 
-    private static final String KEY_Length = "length";
+    private static final String KEY_Length = "schemes";
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -70,27 +71,26 @@ public class Home extends ActionBarActivity {
             public void run() {
                 UserFunctions userFunction = new UserFunctions();
                 String email = userFunction.getUserEmail(getApplicationContext());
-                JSONObject json = userFunction.syncSchemes(email);
 
                 try {
+                    JSONObject json = userFunction.syncSchemes(email);
                     if (json.getString(KEY_Length) != null) {
                         //loginErrorMsg.setText("");
                         String res = json.getString(KEY_Length);
-                        if(Integer.parseInt(res) == 1){
-                            // user successfully logged in
-                            // Store user details in SQLite Database
-                            Log.e("Schemes!",Integer.parseInt(res)+ "");
-                            // Clear all previous data in database
-                            // userFunction.logoutUser(getApplicationContext());
-
-                            // Launch Dashboard Screen
-                        }else{
+                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                        JSONArray json_schemes = json.getJSONArray("schemes");
+                        //Log.e("Schemes!", json_schemes.length() + "");
+                        for (int i=0;i<json_schemes.length();i++) {
+                            db.addScheme(json_schemes.getJSONObject(i).getString("SchemeID"),json_schemes.getJSONObject(i).getString("SchemeName"),json_schemes.getJSONObject(i).getString("StampsCurrent"),json_schemes.getJSONObject(i).getString("StampsForever"));
+                        }
+                        Log.e("Schemes!", db.getSchemeCount() + "");
+                    }else   {
                             // Error in login
                             Log.e("String", "WE HAVE NOT LOGGED IN");
                             //loginErrorMsg.setText("Incorrect username/password");
                         }
                     }
-                } catch (JSONException e) {
+                    catch (Exception e) {
                     e.printStackTrace();
                 }
             }

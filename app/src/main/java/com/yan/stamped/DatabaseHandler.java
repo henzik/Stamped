@@ -3,6 +3,7 @@ package com.yan.stamped;
 /**
  * Created by Henrik on 27/01/2015.
  */
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.content.ContentValues;
@@ -35,7 +36,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String SCHEME_NAME = "SchemeName";
     private static final String SCHEME_STAMPS = "StampsCurrent";
     private static final String SCHEME_TOTAL_STAMPS = "StampsForever";
-    private static final String SCHEME_LEVEL = "Level";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -55,8 +55,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + SCHEME_ID + " INTEGER PRIMARY KEY,"
                 + SCHEME_NAME + " TEXT,"
                 + SCHEME_STAMPS + " INTEGER,"
-                + SCHEME_TOTAL_STAMPS + " INTEGER,"
-                + SCHEME_LEVEL + " STRING"+")";
+                + SCHEME_TOTAL_STAMPS + " INTEGER"+")";
 
         db.execSQL(CREATE_SCHEMES_TABLE);
     }
@@ -74,7 +73,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /**
      * Storing user details in database
      * */
-    public void addUser(String name, String email, String uid) {
+
+    public void addScheme(String sid, String sname, String sstamps, String stotal) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(SCHEME_ID, sid); // Name
+        values.put(SCHEME_NAME, sname); // Email
+        values.put(SCHEME_STAMPS, sstamps); // Email
+        values.put(SCHEME_TOTAL_STAMPS, stotal); // Email
+
+        // Inserting Row
+        db.insert(TABLE_SCHEMES, null, values);
+        db.close(); // Closing database connection
+    }
+
+     public void addUser(String name, String email, String uid) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -108,6 +122,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // return user
         return user;
     }
+    public String[] getSchemeNames(){
+        ArrayList<String> schemeArray = new ArrayList<String>();
+        String selectQuery = "SELECT SchemeName  * FROM " + TABLE_SCHEMES;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+            schemeArray.add(cursor.getString(1));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+        // return user
+        schemeArray.add("");
+        String[] finalArray = new String[schemeArray.size()];
+        return schemeArray.toArray(finalArray);
+    }
 
     /**
      * Getting user login status
@@ -115,6 +148,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * */
     public int getRowCount() {
         String countQuery = "SELECT  * FROM " + TABLE_LOGIN;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int rowCount = cursor.getCount();
+        db.close();
+        cursor.close();
+
+        // return row count
+        return rowCount;
+    }
+
+    public int getSchemeCount() {
+        String countQuery = "SELECT  * FROM " + TABLE_SCHEMES;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         int rowCount = cursor.getCount();
@@ -133,6 +178,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         // Delete All Rows
         db.delete(TABLE_LOGIN, null, null);
+        db.close();
+    }
+
+    public void resetSchemes(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Delete All Rows
+        db.delete(TABLE_SCHEMES, null, null);
         db.close();
     }
 
