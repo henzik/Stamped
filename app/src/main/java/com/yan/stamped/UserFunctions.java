@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -25,6 +26,7 @@ public class UserFunctions {
     private static String login_tag = "login";
     private static String sync_tag = "sync";
     private static String register_tag = "register";
+    private static String increment_tag = "increment";
 
     // constructor
     public UserFunctions(){
@@ -57,6 +59,18 @@ public class UserFunctions {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("tag", sync_tag));
         params.add(new BasicNameValuePair("email", email));
+        JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
+        // return json
+        Log.e("JSON", json.toString());
+        return json;
+    }
+
+    public JSONObject incrementStamp(String email, String SchemeID){
+        // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", increment_tag));
+        params.add(new BasicNameValuePair("email", email));
+        params.add(new BasicNameValuePair("SchemeID", SchemeID));
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
         // return json
         Log.e("JSON", json.toString());
@@ -110,6 +124,35 @@ public class UserFunctions {
         DatabaseHandler db = new DatabaseHandler(context);
         db.resetTables();
         return true;
+    }
+
+    public void sync(final Context context) {
+        new Thread(new Runnable() {
+            public void run() {
+                String email = getUserEmail(context);
+
+                try {
+                    JSONObject json = syncSchemes(email);
+                    if (json.getString("schemes") != null) {
+                        String res = json.getString("schemes");
+                        DatabaseHandler db = new DatabaseHandler(context);
+                        JSONArray json_schemes = json.getJSONArray("schemes");
+                        //Log.e("Schemes!", json_schemes.length() + "");
+                        for (int i=0;i<json_schemes.length();i++) {
+                            db.addScheme(json_schemes.getJSONObject(i).getString("SchemeID"),json_schemes.getJSONObject(i).getString("SchemeName"),json_schemes.getJSONObject(i).getString("StampsCurrent"),json_schemes.getJSONObject(i).getString("StampsForever"));
+                        }
+
+                    }else   {
+                        // Error in login
+                        Log.e("String", "WE HAVE NOT LOGGED IN");
+                        //loginErrorMsg.setText("Incorrect username/password");
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
 }

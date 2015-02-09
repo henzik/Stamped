@@ -399,8 +399,8 @@ int id action_menu_presenter 0x7f080003
 int id action_mode_bar 0x7f08002f
 int id action_mode_bar_stub 0x7f08002e
 int id action_mode_close_button 0x7f080021
-int id action_search 0x7f080054
 int id action_settings 0x7f080055
+int id action_sync 0x7f080054
 int id activity_chooser_view_content 0x7f080022
 int id always 0x7f080017
 int id beginning 0x7f080014

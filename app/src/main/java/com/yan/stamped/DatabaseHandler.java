@@ -9,6 +9,7 @@ import java.util.HashMap;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -84,11 +85,30 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(SCHEME_TOTAL_STAMPS, stotal); // Email
 
         // Inserting Row
-        db.insert(TABLE_SCHEMES, null, values);
+        if(existScheme(sid) != true) {
+            db.insert(TABLE_SCHEMES, null,values);
+        } else {
+            db.update(TABLE_SCHEMES, values, SCHEME_ID + " = " + sid, null);
+        }
+
         db.close(); // Closing database connection
     }
 
-     public void addUser(String name, String email, String uid) {
+    private boolean existScheme(String sid) {
+        String selectQuery = "SELECT SchemeID FROM " + TABLE_SCHEMES+ " WHERE SchemeID = " + sid;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void addUser(String name, String email, String uid) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -124,22 +144,47 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     public String[] getSchemeNames(){
         ArrayList<String> schemeArray = new ArrayList<String>();
-        String selectQuery = "SELECT SchemeName  * FROM " + TABLE_SCHEMES;
+        String selectQuery = "SELECT SchemeName FROM " + TABLE_SCHEMES;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // Move to first row
         cursor.moveToFirst();
-        if(cursor.getCount() > 0){
-            schemeArray.add(cursor.getString(1));
+        int i = getSchemeCount();
+        for(int x=0;x<i;x++) {
+            schemeArray.add(cursor.getString(0));
             cursor.moveToNext();
         }
         cursor.close();
         db.close();
         // return user
-        schemeArray.add("");
-        String[] finalArray = new String[schemeArray.size()];
-        return schemeArray.toArray(finalArray);
+        String[] stringArray = schemeArray.toArray(new String[schemeArray.size()]);
+        return stringArray;
+    }
+
+    public Integer[] getSchemeCurrentStamps(){
+        ArrayList<Integer> schemeArray = new ArrayList<Integer>();
+        String selectQuery = "SELECT StampsCurrent FROM " + TABLE_SCHEMES;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        int i = getSchemeCount();
+        for(int x=0;x<i;x++) {
+            schemeArray.add(cursor.getInt(0));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+        // return user
+        Integer[] intArray = schemeArray.toArray(new Integer[schemeArray.size()]);
+        return intArray;
+    }
+
+    public String[] testme() {
+       String[] blah = {"1","2"};
+        return blah;
     }
 
     /**

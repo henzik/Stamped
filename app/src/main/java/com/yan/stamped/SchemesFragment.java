@@ -37,7 +37,7 @@ public class SchemesFragment extends Fragment{
         super.onActivityCreated(savedInstanceState);
         View v = this.getView();
         myGrid = (GridView) v.findViewById(R.id.gweed);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplication(),
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1, numbers);
 
         myGrid.setAdapter(adapter);
@@ -48,9 +48,9 @@ public class SchemesFragment extends Fragment{
                 Toast.makeText(getActivity().getApplicationContext(),
                         ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
             }
-        });
-
-       // Log.i("EEE",myGrid);
+        });      // Log.i("EEE",myGrid);
 
     }
+
+
 }

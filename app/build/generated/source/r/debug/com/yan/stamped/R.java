@@ -1486,8 +1486,8 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f08002f;
         public static final int action_mode_bar_stub=0x7f08002e;
         public static final int action_mode_close_button=0x7f080021;
-        public static final int action_search=0x7f080054;
         public static final int action_settings=0x7f080055;
+        public static final int action_sync=0x7f080054;
         public static final int activity_chooser_view_content=0x7f080022;
         public static final int always=0x7f080017;
         public static final int beginning=0x7f080014;

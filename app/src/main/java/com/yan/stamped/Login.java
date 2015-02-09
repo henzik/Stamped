@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,6 +79,7 @@ public class Login extends ActionBarActivity {
                         }else{
                             // Error in login
                             Log.e("String", "WE HAVE NOT LOGGED IN");
+                            //Toast.makeText(getApplicationContext(),"Incorrect Username or Password", Toast.LENGTH_SHORT).show();
                             //loginErrorMsg.setText("Incorrect username/password");
                         }
                     }

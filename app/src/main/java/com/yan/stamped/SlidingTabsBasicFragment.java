@@ -44,6 +44,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     static final String LOG_TAG = "SlidingTabsBasicFragment";
     SchemesFragment SCHEMES = new SchemesFragment();
     private FragmentActivity myContext;
+    ImageAdapter imageadapt;
 
     /**
      * A custom {@link android.support.v4.view.ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -65,6 +66,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        imageadapt = new ImageAdapter(getActivity());
         return inflater.inflate(R.layout.home_fragment, container, false);
     }
 
@@ -152,26 +154,35 @@ public class SlidingTabsBasicFragment extends Fragment {
             View view;
             switch(position) {
                 case 0:
+                    imageadapt.reload();
+                    imageadapt.notifyDataSetChanged();
+                    container.invalidate();
                     view = getActivity().getLayoutInflater().inflate(R.layout.profile_fragment,
                             container, false);
-
                     container.addView(view);
                     break;
                 case 1:
                    // fragManager.beginTransaction().add(R.id.viewpager, SCHEMES).commit();
                    // view = SCHEMES.getView();
+                    imageadapt.reload();
+                    imageadapt.notifyDataSetChanged();
+                    container.invalidate();
                     view = getActivity().getLayoutInflater().inflate(R.layout.schemes_fragment,
                             container, false);
-                    container.addView(view);
                     INITIATE(view);
-                    break;
+                    container.addView(view);
 
+                    break;
                 case 2:
+                    imageadapt.reload();
+                    imageadapt.notifyDataSetChanged();
+                    container.invalidate();
                     view = getActivity().getLayoutInflater().inflate(R.layout.rewards_fragment,
                         container, false);
                     container.addView(view);
                     break;
                 default:
+                    imageadapt.notifyDataSetChanged();
                     view = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
                             container, false);
                     container.addView(view);
@@ -190,15 +201,17 @@ public class SlidingTabsBasicFragment extends Fragment {
         public void INITIATE(View v){
             myGrid = (GridView) v.findViewById(R.id.gweed);
 
-            myGrid.setAdapter(new ImageAdapter(getActivity()));
+            myGrid.setAdapter(null);
+            myGrid.setAdapter(imageadapt);
 
             myGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v,
                                         int position, long id) {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),
+                            imageadapt.getName(position) + imageadapt.getStampCount(position), Toast.LENGTH_SHORT).show();
                 }
             });
+
 
         }
         /**

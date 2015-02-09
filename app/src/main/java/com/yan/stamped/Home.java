@@ -16,6 +16,7 @@ import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewAnimator;
 
 import org.json.JSONArray;
@@ -32,16 +33,17 @@ public class Home extends ActionBarActivity {
         private String email;
         GridLayout myGrid;
         View myview;
+        UserFunctions userFunctions = new UserFunctions();
 
     private static final String KEY_Length = "schemes";
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            UserFunctions userFunctions = new UserFunctions();
+            userFunctions = new UserFunctions();
             if(userFunctions.isUserLoggedIn(getApplicationContext())) {
                 setContentView(R.layout.activity_home);
-                sync();
+                userFunctions.sync(getApplicationContext());
                 if (savedInstanceState == null) {
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     SlidingTabsBasicFragment fragment = new SlidingTabsBasicFragment();
@@ -66,34 +68,16 @@ public class Home extends ActionBarActivity {
             return super.onCreateOptionsMenu(menu);
         }
 
-    public void sync() {
-        new Thread(new Runnable() {
-            public void run() {
-                UserFunctions userFunction = new UserFunctions();
-                String email = userFunction.getUserEmail(getApplicationContext());
-
-                try {
-                    JSONObject json = userFunction.syncSchemes(email);
-                    if (json.getString(KEY_Length) != null) {
-                        //loginErrorMsg.setText("");
-                        String res = json.getString(KEY_Length);
-                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-                        JSONArray json_schemes = json.getJSONArray("schemes");
-                        //Log.e("Schemes!", json_schemes.length() + "");
-                        for (int i=0;i<json_schemes.length();i++) {
-                            db.addScheme(json_schemes.getJSONObject(i).getString("SchemeID"),json_schemes.getJSONObject(i).getString("SchemeName"),json_schemes.getJSONObject(i).getString("StampsCurrent"),json_schemes.getJSONObject(i).getString("StampsForever"));
-                        }
-                        Log.e("Schemes!", db.getSchemeCount() + "");
-                    }else   {
-                            // Error in login
-                            Log.e("String", "WE HAVE NOT LOGGED IN");
-                            //loginErrorMsg.setText("Incorrect username/password");
-                        }
-                    }
-                    catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_sync:
+                Toast.makeText(getApplicationContext(),
+                        "Synching Stampbook", Toast.LENGTH_SHORT).show();
+                userFunctions.sync(getApplicationContext());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
