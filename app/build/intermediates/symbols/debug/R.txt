@@ -432,7 +432,6 @@ int id item_title 0x7f09004d
 int id listMode 0x7f090009
 int id listView 0x7f090042
 int id listView2 0x7f090054
-int id listView3 0x7f090048
 int id list_item 0x7f090026
 int id middle 0x7f090016
 int id mini 0x7f090013
@@ -443,6 +442,7 @@ int id passText 0x7f090045
 int id progress_circular 0x7f090005
 int id progress_horizontal 0x7f090006
 int id radio 0x7f09002c
+int id rewardList 0x7f090048
 int id sample_content_fragment 0x7f090041
 int id sample_main_layout 0x7f090040
 int id schemeName 0x7f090056

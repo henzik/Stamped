@@ -1519,7 +1519,6 @@ containing a value of this type.
         public static final int listMode=0x7f090009;
         public static final int listView=0x7f090042;
         public static final int listView2=0x7f090054;
-        public static final int listView3=0x7f090048;
         public static final int list_item=0x7f090026;
         public static final int middle=0x7f090016;
         public static final int mini=0x7f090013;
@@ -1530,6 +1529,7 @@ containing a value of this type.
         public static final int progress_circular=0x7f090005;
         public static final int progress_horizontal=0x7f090006;
         public static final int radio=0x7f09002c;
+        public static final int rewardList=0x7f090048;
         public static final int sample_content_fragment=0x7f090041;
         public static final int sample_main_layout=0x7f090040;
         public static final int schemeName=0x7f090056;

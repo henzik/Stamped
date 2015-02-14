@@ -74,7 +74,6 @@ public class Home extends ActionBarActivity {
     @Override
     public void onResume() {
         super.onResume();
-        userFunctions.sync(this);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {

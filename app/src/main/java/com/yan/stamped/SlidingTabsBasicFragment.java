@@ -34,8 +34,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * to display a custom {@link android.support.v4.view.ViewPager} title strip which gives continuous feedback to the user
@@ -48,6 +52,8 @@ public class SlidingTabsBasicFragment extends Fragment {
     private FragmentActivity myContext;
     ImageAdapter imageadapt;
     DatabaseHandler db;
+    ArrayList<String> availableRewards;
+    ArrayAdapter<String> arrayAdapter;
 
     /**
      * A custom {@link android.support.v4.view.ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -71,6 +77,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                              Bundle savedInstanceState) {
         imageadapt = new ImageAdapter(getActivity());
         db = new DatabaseHandler(getActivity());
+        availableRewards = new ArrayList<String>();
+        //arrayAdapter = new ArrayAdapter<String>(getActivity());
         return inflater.inflate(R.layout.home_fragment, container, false);
     }
 
@@ -187,9 +195,14 @@ public class SlidingTabsBasicFragment extends Fragment {
                         container, false);
                     myGrid.invalidate();
                     container.addView(view);
+                    ListView rewardlist = (ListView) container.getRootView().findViewById(R.id.listView2);
+                    rewardlist.setAdapter(null);
+                    availableRewards = db.getAvailableRewards();
+                    arrayAdapter = new ArrayAdapter<String>(container.getRootView().getContext(), android.R.layout.simple_list_item_1, availableRewards);
+
+                    rewardlist.setAdapter(arrayAdapter);
                     break;
                 default:
-                    imageadapt.notifyDataSetChanged();
                     view = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
                             container, false);
                     container.addView(view);

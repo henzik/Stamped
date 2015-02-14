@@ -27,6 +27,7 @@ public class UserFunctions {
     private static String sync_tag = "sync";
     private static String register_tag = "register";
     private static String increment_tag = "increment";
+    private static String rewards_tag = "pullrewards";
 
     // constructor
     public UserFunctions(){
@@ -64,6 +65,18 @@ public class UserFunctions {
         Log.e("JSON", json.toString());
         return json;
     }
+
+    public JSONObject syncRewards(String email){
+        // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", rewards_tag));
+        params.add(new BasicNameValuePair("email", email));
+        JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
+        // return json
+        Log.e("JSON", json.toString());
+        return json;
+    }
+
 
     public JSONObject incrementStamp(String email, String SchemeID){
         // Building Parameters
@@ -133,15 +146,20 @@ public class UserFunctions {
 
                 try {
                     JSONObject json = syncSchemes(email);
+                    JSONObject json2 = syncRewards(email);
                     if (json.getString("schemes") != null) {
                         String res = json.getString("schemes");
+                        String res2 = json2.getString("rewards");
                         DatabaseHandler db = new DatabaseHandler(context);
                         JSONArray json_schemes = json.getJSONArray("schemes");
+                        JSONArray json_schemes2 = json2.getJSONArray("rewards");
                         //Log.e("Schemes!", json_schemes.length() + "");
                         for (int i=0;i<json_schemes.length();i++) {
                             db.addScheme(json_schemes.getJSONObject(i).getString("SchemeID"),json_schemes.getJSONObject(i).getString("SchemeName"),json_schemes.getJSONObject(i).getString("StampsCurrent"),json_schemes.getJSONObject(i).getString("StampsForever"));
                         }
-
+                        for (int i=0;i<json_schemes2.length();i++) {
+                            db.addReward(json_schemes2.getJSONObject(i).getString("RewardID"),json_schemes2.getJSONObject(i).getString("SchemeID"),json_schemes2.getJSONObject(i).getString("Name"),json_schemes2.getJSONObject(i).getString("Description"),json_schemes2.getJSONObject(i).getString("Cost"),json_schemes2.getJSONObject(i).getString("Requirement"));
+                        }
                     }else   {
                         // Error in login
                         Log.e("String", "WE HAVE NOT LOGGED IN");
@@ -154,5 +172,4 @@ public class UserFunctions {
             }
         }).start();
     }
-
 }

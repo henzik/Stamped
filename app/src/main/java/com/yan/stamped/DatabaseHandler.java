@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -89,8 +90,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    public void addReward() {
-        return null;
+    public void addReward(String rid, String rscheme, String rname,
+                          String rdesc, String rcost, String rreq) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(REWARD_ID, rid);
+        values.put(REWARD_SCHEME, rscheme);
+        values.put(REWARD_NAME, rname);
+        values.put(REWARD_DESC, rdesc);
+        values.put(REWARD_COST, rcost);
+        values.put(REWARD_REQUIREMENT, rreq);
+        // Inserting Row
+        if(existReward(rid) != true) {
+            db.insert(TABLE_REWARDS, null,values);
+        } else {
+            db.update(TABLE_REWARDS, values, REWARD_ID + " = " + rid, null);
+        }
+
     }
     /**
      * Storing user details in database
@@ -117,6 +134,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private boolean existScheme(String sid) {
         String selectQuery = "SELECT SchemeID FROM " + TABLE_SCHEMES+ " WHERE SchemeID = " + sid;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean existReward(String sid) {
+        String selectQuery = "SELECT RewardID FROM " + TABLE_REWARDS+ " WHERE RewardID = " + sid;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -163,6 +194,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // return user
         return user;
     }
+
+    public HashMap<String, String> getScheme(int id){
+        HashMap<String,String> user = new HashMap<String,String>();
+        String selectQuery = "SELECT  * FROM " + TABLE_SCHEMES + " WHERE SchemeID =" +id;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+            user.put("SchemeID", cursor.getString(1));
+            user.put("SchemeName", cursor.getString(2));
+            user.put("StampsCurrent", cursor.getString(3));
+            user.put("StampsForever", cursor.getString(3));
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return user;
+    }
+
     public ArrayList<String> getSchemeNames(){
         ArrayList<String> schemeArray = new ArrayList<String>();
         String selectQuery = "SELECT SchemeName FROM " + TABLE_SCHEMES;
@@ -174,6 +226,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         int i = getSchemeCount();
         for(int x=0;x<i;x++) {
             schemeArray.add(cursor.getString(0));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+        // return user
+        String[] stringArray = schemeArray.toArray(new String[schemeArray.size()]);
+        return schemeArray;
+    }
+
+    public ArrayList<String> getAvailableRewards(){
+        ArrayList<String> schemeArray = new ArrayList<String>();
+        String selectQuery = "SELECT Cost, SchemeID, Name FROM " + TABLE_REWARDS;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        int i = getRewardCount();
+        for(int x=0;x<i;x++) {
+            int cost = Integer.parseInt(getScheme(cursor.getInt(1)).get("StampsCurrent"));
+            if(cursor.getInt(0) <= cost) {
+                schemeArray.add(cursor.getString(2)+ " - costs: " + cost);
+            }
             cursor.moveToNext();
         }
         cursor.close();
@@ -223,7 +298,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public String[] testme() {
-       String[] blah = {"1","2"};
+        String[] blah = {"1","2"};
         return blah;
     }
 
@@ -245,6 +320,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public int getSchemeCount() {
         String countQuery = "SELECT  * FROM " + TABLE_SCHEMES;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int rowCount = cursor.getCount();
+        db.close();
+        cursor.close();
+
+        // return row count
+        return rowCount;
+    }
+
+    public int getRewardCount() {
+        String countQuery = "SELECT  * FROM " + TABLE_REWARDS;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         int rowCount = cursor.getCount();
