@@ -11,9 +11,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
         android:layout_gravity="center"
-        android:src="@drawable/ic_icon"
+        android:src="@drawable/ic_henny"
         android:layout_weight="0.31"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -50,7 +51,7 @@
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:text="0"
-                android:id="@+id/button3"
+                android:id="@+id/stampScore"
                 android:enabled="false"
                 android:background="@drawable/button_background_light"
                 android:layout_weight="0.25" />

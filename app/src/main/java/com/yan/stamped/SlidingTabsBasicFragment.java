@@ -17,6 +17,7 @@ package com.yan.stamped;
  */
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -30,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -45,6 +47,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     SchemesFragment SCHEMES = new SchemesFragment();
     private FragmentActivity myContext;
     ImageAdapter imageadapt;
+    DatabaseHandler db;
 
     /**
      * A custom {@link android.support.v4.view.ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -67,6 +70,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         imageadapt = new ImageAdapter(getActivity());
+        db = new DatabaseHandler(getActivity());
         return inflater.inflate(R.layout.home_fragment, container, false);
     }
 
@@ -155,30 +159,33 @@ public class SlidingTabsBasicFragment extends Fragment {
             switch(position) {
                 case 0:
                     imageadapt.reload();
+                    imageadapt.addQuick();
                     imageadapt.notifyDataSetChanged();
-                    container.invalidate();
                     view = getActivity().getLayoutInflater().inflate(R.layout.profile_fragment,
                             container, false);
                     container.addView(view);
+                    Button stampScore = (Button) container.getRootView().findViewById(R.id.stampScore);
+                    stampScore.setText(db.getStampScore().toString());
                     break;
                 case 1:
                    // fragManager.beginTransaction().add(R.id.viewpager, SCHEMES).commit();
                    // view = SCHEMES.getView();
-                    imageadapt.reload();
-                    imageadapt.notifyDataSetChanged();
-                    container.invalidate();
                     view = getActivity().getLayoutInflater().inflate(R.layout.schemes_fragment,
                             container, false);
                     INITIATE(view);
+                    imageadapt.reload();
+                    imageadapt.notifyDataSetChanged();
+                    imageadapt.addQuick();
+                    myGrid.invalidate();
                     container.addView(view);
-
                     break;
                 case 2:
                     imageadapt.reload();
+                    imageadapt.addQuick();
                     imageadapt.notifyDataSetChanged();
-                    container.invalidate();
                     view = getActivity().getLayoutInflater().inflate(R.layout.rewards_fragment,
                         container, false);
+                    myGrid.invalidate();
                     container.addView(view);
                     break;
                 default:
@@ -207,8 +214,14 @@ public class SlidingTabsBasicFragment extends Fragment {
             myGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v,
                                         int position, long id) {
-                    Toast.makeText(getActivity(),
-                            imageadapt.getName(position) + imageadapt.getStampCount(position), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(),
+                    //        imageadapt.getName(position) + imageadapt.getStampCount(position), Toast.LENGTH_SHORT).show();
+                    Intent scheme = new Intent(getActivity(), Scheme.class);
+                    Bundle b = new Bundle();
+                    b.putString("name", imageadapt.getName(position)); //Your id
+                    b.putInt("stamps",  imageadapt.getStampCount(position));
+                    scheme.putExtras(b); //Put your id to your next Intent
+                    startActivity(scheme);
                 }
             });
 

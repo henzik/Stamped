@@ -14,14 +14,16 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by Henrik on 26/01/2015.
  */
 public class ImageAdapter extends BaseAdapter {
         private Context mContext;
         private DatabaseHandler db;
-        private String[] mThumbIds;
-        private Integer[] mStampCounts;
+        private ArrayList<String> mThumbIds;
+        private ArrayList<Integer> mStampCounts;
 
         public ImageAdapter(Context c) {
             mContext = c;
@@ -30,8 +32,13 @@ public class ImageAdapter extends BaseAdapter {
             mStampCounts = db.getSchemeCurrentStamps();
         }
 
+        public void addQuick() {
+            mThumbIds.add("LOL");
+            mThumbIds.remove("LOL");
+        }
+
         public int getCount() {
-            return mThumbIds.length;
+            return mThumbIds.size();
         }
 
         public void reload() {
@@ -44,10 +51,10 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         public String getName(int position) {
-            return mThumbIds[position];
+            return mThumbIds.get(position);
         }
 
-        public Integer getStampCount (int position) {return mStampCounts[position];}
+        public Integer getStampCount (int position) {return mStampCounts.get(position);}
 
         public long getItemId(int position) {
             return 0;
@@ -62,7 +69,7 @@ public class ImageAdapter extends BaseAdapter {
             if (convertView == null) {  // if it's not recycled, initialize some attribute
                 LL = new LinearLayout(mContext);
                 LL.setOrientation(LinearLayout.VERTICAL);
-                LL.setBackgroundColor(Color.argb(100,0,89,45));
+                LL.setBackgroundColor(Color.argb(100,197,202,233));
                 LL.setMinimumHeight(230);
                 LL.setGravity(Gravity.BOTTOM);
                 imageView = new ImageView(mContext);

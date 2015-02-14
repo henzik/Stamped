@@ -25,6 +25,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Login table name
     private static final String TABLE_LOGIN = "login";
     private static final String TABLE_SCHEMES = "schemes";
+    private static final String TABLE_REWARDS = "rewards";
 
     // Login Table Columns names
     private static final String KEY_ID = "id";
@@ -37,6 +38,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String SCHEME_NAME = "SchemeName";
     private static final String SCHEME_STAMPS = "StampsCurrent";
     private static final String SCHEME_TOTAL_STAMPS = "StampsForever";
+
+    //Rewards Table Column Names
+    private static final String REWARD_SCHEME = "SchemeID";
+    private static final String REWARD_ID = "RewardID";
+    private static final String REWARD_NAME = "Name";
+    private static final String REWARD_DESC = "Description";
+    private static final String REWARD_COST = "Cost";
+    private static final String REWARD_REQUIREMENT = "Requirement";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -57,8 +66,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + SCHEME_NAME + " TEXT,"
                 + SCHEME_STAMPS + " INTEGER,"
                 + SCHEME_TOTAL_STAMPS + " INTEGER"+")";
-
         db.execSQL(CREATE_SCHEMES_TABLE);
+
+        String CREATE_REWARDS_TABLE = "CREATE TABLE " + TABLE_REWARDS + "("
+                + REWARD_ID + " INTEGER PRIMARY KEY,"
+                + REWARD_SCHEME + " INTEGER,"
+                + REWARD_NAME + " TEXT,"
+                + REWARD_DESC + " TEXT,"
+                + REWARD_COST + " INTEGER,"
+                + REWARD_REQUIREMENT + " INTEGER"+")";
+        db.execSQL(CREATE_REWARDS_TABLE);
     }
 
     // Upgrading database
@@ -71,6 +88,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+
+    public void addReward() {
+        return null;
+    }
     /**
      * Storing user details in database
      * */
@@ -142,7 +163,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // return user
         return user;
     }
-    public String[] getSchemeNames(){
+    public ArrayList<String> getSchemeNames(){
         ArrayList<String> schemeArray = new ArrayList<String>();
         String selectQuery = "SELECT SchemeName FROM " + TABLE_SCHEMES;
 
@@ -159,10 +180,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
         // return user
         String[] stringArray = schemeArray.toArray(new String[schemeArray.size()]);
-        return stringArray;
+        return schemeArray;
     }
 
-    public Integer[] getSchemeCurrentStamps(){
+    public ArrayList<Integer> getSchemeCurrentStamps(){
         ArrayList<Integer> schemeArray = new ArrayList<Integer>();
         String selectQuery = "SELECT StampsCurrent FROM " + TABLE_SCHEMES;
 
@@ -179,7 +200,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
         // return user
         Integer[] intArray = schemeArray.toArray(new Integer[schemeArray.size()]);
-        return intArray;
+        return schemeArray;
+    }
+
+    public Integer getStampScore() {
+        int counting = 0;
+        String selectQuery = "SELECT StampsForever FROM " + TABLE_SCHEMES;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        int i = getSchemeCount();
+        for(int x=0;x<i;x++) {
+            counting = counting +(cursor.getInt(0));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return counting*100;
     }
 
     public String[] testme() {

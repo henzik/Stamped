@@ -53,6 +53,11 @@
                 android:name="android.nfc.cardemulation.host_apdu_service"
                 android:resource="@xml/apduservice" />
         </service>
+
+        <activity
+            android:name="com.yan.stamped.Scheme"
+            android:label="@string/title_activity_scheme" >
+        </activity>
     </application>
 
 </manifest>
