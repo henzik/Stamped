@@ -5,6 +5,8 @@ package com.yan.stamped;
  */
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -197,7 +199,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public HashMap<String, String> getScheme(int id){
         HashMap<String,String> user = new HashMap<String,String>();
-        String selectQuery = "SELECT  * FROM " + TABLE_SCHEMES + " WHERE SchemeID =" +id;
+        String selectQuery = "SELECT SchemeID, SchemeName, StampsCurrent, StampsForever FROM " + TABLE_SCHEMES + " WHERE SchemeID =" +id;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -235,6 +237,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return schemeArray;
     }
 
+    public List<Map<String , String>> getRewards(){
+        String selectQuery = "SELECT Cost, SchemeID, Name FROM " + TABLE_REWARDS;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        HashMap<String,String> user = new HashMap<String,String>();
+        List<Map<String , String>> myMap  = new ArrayList<Map<String,String>>();
+
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+            int i = getRewardCount();
+            for(int x=0;x<i;x++) {
+                user.put("Cost", cursor.getString(0));
+                user.put("SchemeID", cursor.getString(1));
+                user.put("StampsName", cursor.getString(2));
+                myMap.add(x,user);
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return myMap;
+    }
+
     public ArrayList<String> getAvailableRewards(){
         ArrayList<String> schemeArray = new ArrayList<String>();
         String selectQuery = "SELECT Cost, SchemeID, Name FROM " + TABLE_REWARDS;
@@ -245,9 +272,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.moveToFirst();
         int i = getRewardCount();
         for(int x=0;x<i;x++) {
-            int cost = Integer.parseInt(getScheme(cursor.getInt(1)).get("StampsCurrent"));
-            if(cursor.getInt(0) <= cost) {
-                schemeArray.add(cursor.getString(2)+ " - costs: " + cost);
+            int price = cursor.getInt(0);
+            int c = cursor.getInt(1);
+            int cost = Integer.parseInt(getScheme(c).get("SchemeName"));
+            Log.e("AVAILABLE", cost+ " " + getScheme(c).get("SchemeName"));
+            if(price <= cost) {
+                schemeArray.add(cursor.getString(2)+ ": " + price +" stamps");
             }
             cursor.moveToNext();
         }
@@ -255,6 +285,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
         // return user
         String[] stringArray = schemeArray.toArray(new String[schemeArray.size()]);
+        return schemeArray;
+    }
+
+    public ArrayList<Integer> getRewardsCosts(){
+        ArrayList<Integer> schemeArray = new ArrayList<Integer>();
+        String selectQuery = "SELECT Cost, SchemeID, Name FROM " + TABLE_REWARDS;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        int i = getRewardCount();
+        for(int x=0;x<i;x++) {
+            int actualPrice = cursor.getInt(0);
+            int c = cursor.getInt(1);
+            int cost = Integer.parseInt(getScheme(c).get("SchemeName"));
+            Log.e("AVAILABLE", cost+ " " + getScheme(c).get("SchemeName"));
+            if(actualPrice <= cost) {
+                schemeArray.add(actualPrice);
+            }
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+        // return user
+        //String[] stringArray = schemeArray.toArray(new String[schemeArray.size()]);
         return schemeArray;
     }
 

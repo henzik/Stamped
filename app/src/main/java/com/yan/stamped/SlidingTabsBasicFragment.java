@@ -17,6 +17,9 @@ package com.yan.stamped;
  */
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -40,6 +43,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * to display a custom {@link android.support.v4.view.ViewPager} title strip which gives continuous feedback to the user
@@ -52,8 +56,11 @@ public class SlidingTabsBasicFragment extends Fragment {
     private FragmentActivity myContext;
     ImageAdapter imageadapt;
     DatabaseHandler db;
+    UserFunctions userFunctions;
     ArrayList<String> availableRewards;
-    ArrayAdapter<String> arrayAdapter;
+    List<Map<String , String>> availableRewardsExtra;
+    //ArrayAdapter<String> arrayAdapter;
+    RewardAdapter rewardAdapter;
 
     /**
      * A custom {@link android.support.v4.view.ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -76,8 +83,11 @@ public class SlidingTabsBasicFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         imageadapt = new ImageAdapter(getActivity());
+        rewardAdapter = new RewardAdapter(getActivity());
         db = new DatabaseHandler(getActivity());
+        userFunctions = new UserFunctions();
         availableRewards = new ArrayList<String>();
+        availableRewards = db.getAvailableRewards();
         //arrayAdapter = new ArrayAdapter<String>(getActivity());
         return inflater.inflate(R.layout.home_fragment, container, false);
     }
@@ -174,6 +184,8 @@ public class SlidingTabsBasicFragment extends Fragment {
                     container.addView(view);
                     Button stampScore = (Button) container.getRootView().findViewById(R.id.stampScore);
                     stampScore.setText(db.getStampScore().toString());
+                    Button availtext = (Button) container.getRootView().findViewById(R.id.availableText);
+                    availtext.setText(availableRewards.size()+ "");
                     break;
                 case 1:
                    // fragManager.beginTransaction().add(R.id.viewpager, SCHEMES).commit();
@@ -195,12 +207,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                         container, false);
                     myGrid.invalidate();
                     container.addView(view);
-                    ListView rewardlist = (ListView) container.getRootView().findViewById(R.id.listView2);
-                    rewardlist.setAdapter(null);
-                    availableRewards = db.getAvailableRewards();
-                    arrayAdapter = new ArrayAdapter<String>(container.getRootView().getContext(), android.R.layout.simple_list_item_1, availableRewards);
-
-                    rewardlist.setAdapter(arrayAdapter);
+                    INITIATEREWARDS(container);
                     break;
                 default:
                     view = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
@@ -217,10 +224,37 @@ public class SlidingTabsBasicFragment extends Fragment {
             return view;
         }
 
+        public void INITIATEREWARDS(View v) {
+            ListView rewardlist = (ListView) v.getRootView().findViewById(R.id.listView2);
+            rewardlist.setAdapter(null);
+            availableRewards = db.getAvailableRewards();
+            availableRewardsExtra = db.getRewards();
+            //arrayAdapter = new ArrayAdapter<String>(v.getRootView().getContext(), android.R.layout.simple_list_item_1, availableRewards);
+
+            rewardlist.setAdapter(rewardAdapter);
+
+            rewardlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View v,
+                                        int position, long id) {
+
+                    Log.e("rewardmessage", "." + availableRewardsExtra.get(0).get("SchemeID") + "." + availableRewardsExtra.get(0).get("Cost"));
+                    userFunctions.setRewardMessage("|" + availableRewardsExtra.get(0).get("SchemeID") + "|" + availableRewardsExtra.get(0).get("Cost"));
+                    Intent scheme = new Intent(getActivity(), RewardClaim.class);
+                    Bundle b = new Bundle();
+                    b.putString("name", imageadapt.getName(position)); //Your id
+                    b.putInt("stamps", imageadapt.getStampCount(position));
+                    scheme.putExtras(b); //Put your id to your next Intent
+                    startActivity(scheme);
+                    getActivity().overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                }
+            });
+        }
 
         public void INITIATE(View v){
             myGrid = (GridView) v.findViewById(R.id.gweed);
-
+            imageadapt.reload();
+            imageadapt.notifyDataSetChanged();
+            imageadapt.addQuick();
             myGrid.setAdapter(null);
             myGrid.setAdapter(imageadapt);
 
@@ -249,6 +283,5 @@ public class SlidingTabsBasicFragment extends Fragment {
             container.removeView((View) object);
             Log.i(LOG_TAG, "destroyItem() [position: " + position + "]");
         }
-
     }
 }

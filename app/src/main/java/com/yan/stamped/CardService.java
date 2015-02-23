@@ -27,9 +27,10 @@ public class CardService extends HostApduService{
         // If the APDU matches the SELECT AID command for this service,
         // send the loyalty card account number, followed by a SELECT_OK status trailer (0x9000).
         if (Arrays.equals(SELECT_APDU, commandApdu)) {
-            String account = userfunctions.getUserEmail(getApplicationContext());
+            String account = userfunctions.getUserEmail(getApplicationContext())+userfunctions.getRewardMessage();
             byte[] accountBytes = account.getBytes();
             Log.i(TAG, "Sending account number: " + account);
+            userfunctions.sync(getApplicationContext());
             return ConcatArrays(accountBytes, SELECT_OK_SW);
         } else {
             return UNKNOWN_CMD_SW;

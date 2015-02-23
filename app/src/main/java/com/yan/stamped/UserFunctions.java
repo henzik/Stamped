@@ -29,6 +29,8 @@ public class UserFunctions {
     private static String increment_tag = "increment";
     private static String rewards_tag = "pullrewards";
 
+    private static String rewardmessage = "";
+
     // constructor
     public UserFunctions(){
         jsonParser = new JSONParser();
@@ -137,6 +139,15 @@ public class UserFunctions {
         DatabaseHandler db = new DatabaseHandler(context);
         db.resetTables();
         return true;
+    }
+
+    public void setRewardMessage(String s) {
+        rewardmessage = s;
+    }
+
+    public String getRewardMessage() {
+
+        return rewardmessage;
     }
 
     public void sync(final Context context) {

@@ -58,6 +58,10 @@
             android:name="com.yan.stamped.Scheme"
             android:label="@string/title_activity_scheme" >
         </activity>
+        <activity
+            android:name="com.yan.stamped.RewardClaim"
+            android:label="@string/title_activity_reward_claim" >
+        </activity>
     </application>
 
 </manifest>

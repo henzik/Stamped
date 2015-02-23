@@ -9,5 +9,6 @@
     <string name="aiddescription">Sample Loyalty Card</string>
     <string name="servicedesc">servicedesc</string>
     <string name="title_activity_scheme">Scheme</string>
+    <string name="title_activity_reward_claim">RewardClaim</string>
 
 </resources>

@@ -236,6 +236,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="servicedesc">servicedesc</string>
     <string name="title_activity_login">Stamped Login</string>
+    <string name="title_activity_reward_claim">RewardClaim</string>
     <string name="title_activity_scheme">Scheme</string>
     <!-- From: file:/C:/Users/Henrik/AndroidStudioProjects/Stamped/app/src/main/res/values/styles.xml -->
     <eat-comment/>

@@ -1,9 +1,11 @@
 package com.yan.stamped;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.provider.ContactsContract;
 import android.support.v7.internal.view.menu.ListMenuItemView;
+import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,21 +65,26 @@ public class ImageAdapter extends BaseAdapter {
         // create a new ImageView for each item referenced by the Adapter
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView imageView;
-            LinearLayout LL;
+            CardView LL;
+            LinearLayout holder;
             TextView tv;
             TextView st;
-            if (convertView == null) {  // if it's not recycled, initialize some attribute
-                LL = new LinearLayout(mContext);
-                LL.setOrientation(LinearLayout.VERTICAL);
-                LL.setBackgroundColor(Color.argb(100,197,202,233));
-                LL.setMinimumHeight(230);
-                LL.setGravity(Gravity.BOTTOM);
+            //if (convertView == null) {  // if it's not recycled, initialize some attribute
+                LL = (CardView)convertView;
+                holder = new LinearLayout(mContext);
+                LL = new CardView(mContext);
+                holder.setOrientation(LinearLayout.VERTICAL);
+                holder.setMinimumHeight(200);
+                LL.setCardBackgroundColor(Color.rgb(255, 64, 129));
+                LL.setRadius(20);
+                LL.setMinimumHeight(200);
+                holder.setGravity(Gravity.BOTTOM);
                 imageView = new ImageView(mContext);
                 tv = new TextView(mContext);
                 tv.setText(getName(position));
                 tv.setGravity(Gravity.CENTER);
                 tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                tv.setBackgroundColor(Color.argb(70,120,64,64));
+                //tv.setBackgroundColor(Color.argb(70,120,64,64));
 
                 st = new TextView(mContext);
                 st.setText(getStampCount(position).toString());
@@ -93,12 +100,13 @@ public class ImageAdapter extends BaseAdapter {
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setPadding(8, 8, 8, 8);
                 //LL.addView(imageView);
-                LL.addView(st);
-                LL.addView(tv);
-            } else {
-                LL = (LinearLayout)convertView;
+                holder.addView(st);
+                holder.addView(tv);
+                LL.addView(holder);
+           // } else {
+             //   LL = (LinearLayout)convertView;
                 //imageView = (ImageView) convertView;
-            }
+          //  }
 
             //imageView.setImageResource(mThumbIds[position]);
             return LL;

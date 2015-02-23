@@ -52,6 +52,10 @@
             android:name=".Scheme"
             android:label="@string/title_activity_scheme" >
         </activity>
+        <activity
+            android:name=".RewardClaim"
+            android:label="@string/title_activity_reward_claim" >
+        </activity>
     </application>
 
 </manifest>
