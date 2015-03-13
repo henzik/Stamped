@@ -10,5 +10,8 @@
     <string name="servicedesc">servicedesc</string>
     <string name="title_activity_scheme">Scheme</string>
     <string name="title_activity_reward_claim">RewardClaim</string>
+    <string name="icon_star">&#xf005;</string>
+    <string name="icon_stampscore">&#xf1b3;</string>
+    <string name="icon_rewards">&#xf145;</string>
 
 </resources>

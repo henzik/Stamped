@@ -61,6 +61,7 @@ public class Home extends ActionBarActivity {
             startActivity(login);
             // Closing dashboard screen
             finish();
+
         }
         //ViewGroup rootView  = inflater.inflate(R.layout.scheme_item, null);
 

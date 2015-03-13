@@ -1,5 +1,9 @@
 package com.yan.stamped;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +12,7 @@ import java.util.Arrays;
 
 public class CardService extends HostApduService{
     private static final String TAG = "Stamped";
+    NotificationManager NM;
     // AID for our loyalty card service.
     private static final String SAMPLE_LOYALTY_CARD_AID = "F285623147";
     // ISO-DEP command HEADER for selecting an AID.
@@ -31,6 +36,12 @@ public class CardService extends HostApduService{
             byte[] accountBytes = account.getBytes();
             Log.i(TAG, "Sending account number: " + account);
             userfunctions.sync(getApplicationContext());
+            userfunctions.dismissAllDialogs();
+            if(userfunctions.getRewardMessage() != "") {
+                userfunctions.setRewardMessage("");
+            } else {
+                Notify("New Stamp","Received New Stamp!","Click here to check it out");
+            }
             return ConcatArrays(accountBytes, SELECT_OK_SW);
         } else {
             return UNKNOWN_CMD_SW;
@@ -81,6 +92,18 @@ public class CardService extends HostApduService{
             offset += array.length;
         }
         return result;
+    }
+
+    @SuppressWarnings("deprecation")
+    public void Notify(String title, String subject, String body) {
+        NM=(NotificationManager)getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+        Notification notify=new Notification(android.R.drawable.
+                stat_notify_more,title,System.currentTimeMillis());
+        final Intent intent = new Intent(this, Main.class);
+        PendingIntent pending=PendingIntent.getActivity(
+                getApplicationContext(),0, intent,0);
+        notify.setLatestEventInfo(getApplicationContext(),subject,body,pending);
+        NM.notify(0, notify);
     }
 
 }

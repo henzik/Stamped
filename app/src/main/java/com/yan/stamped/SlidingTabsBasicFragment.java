@@ -22,6 +22,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -61,6 +62,7 @@ public class SlidingTabsBasicFragment extends Fragment {
     List<Map<String , String>> availableRewardsExtra;
     //ArrayAdapter<String> arrayAdapter;
     RewardAdapter rewardAdapter;
+    Typeface font;
 
     /**
      * A custom {@link android.support.v4.view.ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -88,6 +90,8 @@ public class SlidingTabsBasicFragment extends Fragment {
         userFunctions = new UserFunctions();
         availableRewards = new ArrayList<String>();
         availableRewards = db.getAvailableRewards();
+        availableRewardsExtra = db.getRewards();
+        font = Typeface.createFromAsset( getActivity().getApplicationContext().getAssets(), "fontawesome-webfont.ttf" );
         //arrayAdapter = new ArrayAdapter<String>(getActivity());
         return inflater.inflate(R.layout.home_fragment, container, false);
     }
@@ -179,12 +183,20 @@ public class SlidingTabsBasicFragment extends Fragment {
                     imageadapt.reload();
                     imageadapt.addQuick();
                     imageadapt.notifyDataSetChanged();
-                    view = getActivity().getLayoutInflater().inflate(R.layout.profile_fragment,
+                    rewardAdapter.notifyDataSetChanged();
+                    view = getActivity().getLayoutInflater().inflate(R.layout.brofile_fragment,
                             container, false);
                     container.addView(view);
-                    Button stampScore = (Button) container.getRootView().findViewById(R.id.stampScore);
+                    TextView icon2 = (TextView) container.getRootView().findViewById(R.id.stampscore_icon);
+                    TextView icon3 = (TextView) container.getRootView().findViewById(R.id.availrewards_icon);
+                    TextView fullname = (TextView) container.getRootView().findViewById(R.id.username);
+
+                    fullname.setText(db.getUserDetails().get("Username"));
+                    icon2.setTypeface(font);
+                    icon3.setTypeface(font);
+                    TextView stampScore = (TextView) container.getRootView().findViewById(R.id.stamp_score);
                     stampScore.setText(db.getStampScore().toString());
-                    Button availtext = (Button) container.getRootView().findViewById(R.id.availableText);
+                    TextView availtext = (TextView) container.getRootView().findViewById(R.id.avail_text);
                     availtext.setText(availableRewards.size()+ "");
                     break;
                 case 1:
@@ -194,6 +206,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                             container, false);
                     INITIATE(view);
                     imageadapt.reload();
+                    rewardAdapter.notifyDataSetChanged();
                     imageadapt.notifyDataSetChanged();
                     imageadapt.addQuick();
                     myGrid.invalidate();
@@ -208,6 +221,7 @@ public class SlidingTabsBasicFragment extends Fragment {
                     myGrid.invalidate();
                     container.addView(view);
                     INITIATEREWARDS(container);
+                    rewardAdapter.notifyDataSetChanged();
                     break;
                 default:
                     view = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
@@ -234,18 +248,47 @@ public class SlidingTabsBasicFragment extends Fragment {
             rewardlist.setAdapter(rewardAdapter);
 
             rewardlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                public void onItemClick(AdapterView<?> parent, View v,
+                public void onItemClick(final AdapterView<?> parent, View v,
                                         int position, long id) {
+                    Log.e("rewardmessage", "." + availableRewardsExtra.get(position).get("SchemeID") + "." + availableRewardsExtra.get(0).get("Cost"));
+                    userFunctions.setRewardMessage("|" + availableRewardsExtra.get(position).get("SchemeID") + "|" + availableRewardsExtra.get(0).get("Cost"));
+                    //b.putString("name", imageadapt.getName(position)); //Your id
+                    //b.putInt("stamps", imageadapt.getStampCount(position));
+                    LayoutInflater inflater = getActivity().getLayoutInflater();
+                    View dialoglayout = inflater.inflate(R.layout.alert, null);
+                    TextView title = (TextView) dialoglayout.findViewById(R.id.reward_name);
+                    TextView desc = (TextView) dialoglayout.findViewById(R.id.reward_description);
+                    TextView cost = (TextView) dialoglayout.findViewById(R.id.reward_cost);
+                    Button cancel = (Button) dialoglayout.findViewById(R.id.reward_cancel);
 
-                    Log.e("rewardmessage", "." + availableRewardsExtra.get(0).get("SchemeID") + "." + availableRewardsExtra.get(0).get("Cost"));
-                    userFunctions.setRewardMessage("|" + availableRewardsExtra.get(0).get("SchemeID") + "|" + availableRewardsExtra.get(0).get("Cost"));
-                    Intent scheme = new Intent(getActivity(), RewardClaim.class);
-                    Bundle b = new Bundle();
-                    b.putString("name", imageadapt.getName(position)); //Your id
-                    b.putInt("stamps", imageadapt.getStampCount(position));
-                    scheme.putExtras(b); //Put your id to your next Intent
-                    startActivity(scheme);
-                    getActivity().overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+
+                    title.setText(availableRewardsExtra.get(position).get("Name").split("\\: ")[1]);
+                    desc.setText(availableRewardsExtra.get(position).get("Description"));
+                    cost.setText(availableRewardsExtra.get(position).get("Cost")+" stamps");
+
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setView(dialoglayout);
+                    builder.setCancelable(false);
+
+                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                         // userFunctions.setRewardMessage("");
+                        }
+                    });
+
+                    final AlertDialog dialog = builder.create();
+                    userFunctions.addAlert(dialog);
+
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Log.e("test","clearing");
+                           userFunctions.dismissAllDialogs();
+                        }
+                    });
+
+                    dialog.show();
                 }
             });
         }
@@ -263,12 +306,31 @@ public class SlidingTabsBasicFragment extends Fragment {
                                         int position, long id) {
                     //Toast.makeText(getActivity(),
                     //        imageadapt.getName(position) + imageadapt.getStampCount(position), Toast.LENGTH_SHORT).show();
-                    Intent scheme = new Intent(getActivity(), Scheme.class);
-                    Bundle b = new Bundle();
-                    b.putString("name", imageadapt.getName(position)); //Your id
-                    b.putInt("stamps",  imageadapt.getStampCount(position));
-                    scheme.putExtras(b); //Put your id to your next Intent
-                    startActivity(scheme);
+                    //Intent scheme = new Intent(getActivity(), Scheme.class);
+                    //Bundle b = new Bundle();
+                    //b.putString("name", imageadapt.getName(position)); //Your id
+                    //b.putInt("stamps",  imageadapt.getStampCount(position));
+                    //scheme.putExtras(b); //Put your id to your next Intent
+                    //startActivity(scheme);
+
+                    LayoutInflater inflater = getActivity().getLayoutInflater();
+                    View dialoglayout = inflater.inflate(R.layout.scheme_details, null);
+                    TextView title = (TextView) dialoglayout.findViewById(R.id.reward_name);
+                    TextView cost = (TextView) dialoglayout.findViewById(R.id.reward_text);
+                    GridView gGrid = (GridView) dialoglayout.findViewById(R.id.stamp_grid);
+
+
+                    title.setText(imageadapt.getName(position));
+                    //desc.setText(availableRewardsExtra.get(position).get("Description"));
+
+                    cost.setText(db.getRewards().get(position).get("Cost") +" Stamps - "+db.getRewards().get(position).get("Name").split("\\: ")[1]);
+                    gGrid.setAdapter(new ImageAdapter2(getActivity(),Integer.parseInt(db.getRewards().get(position).get("Cost")),imageadapt.getStampCount(position)));
+
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setView(dialoglayout);
+                    final AlertDialog dialog = builder.create();
+                    userFunctions.addAlert(dialog);
+                    dialog.show();
                 }
             });
 

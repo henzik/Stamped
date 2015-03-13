@@ -238,7 +238,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public List<Map<String , String>> getRewards(){
-        String selectQuery = "SELECT Cost, SchemeID, Name FROM " + TABLE_REWARDS;
+        String selectQuery = "SELECT Cost, SchemeID, Name, Description FROM " + TABLE_REWARDS;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -252,7 +252,38 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             for(int x=0;x<i;x++) {
                 user.put("Cost", cursor.getString(0));
                 user.put("SchemeID", cursor.getString(1));
-                user.put("StampsName", cursor.getString(2));
+                user.put("Name", cursor.getString(2));
+                user.put("Description", cursor.getString(3));
+                myMap.add(x,user);
+                cursor.moveToNext();
+                user = new HashMap<String,String>();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        Log.e("DEBUG",myMap.size() + "");
+        return myMap;
+    }
+
+
+    public List<Map<String , String>> getRewardsBySchemeID(int id){
+        String selectQuery = "SELECT Cost, SchemeID, Name, Description FROM " + TABLE_REWARDS + " WHERE SchemeID = "+id;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        HashMap<String,String> user = new HashMap<String,String>();
+        List<Map<String , String>> myMap  = new ArrayList<Map<String,String>>();
+
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+            int i = getRewardCount();
+            for(int x=0;x<i;x++) {
+                user.put("Cost", cursor.getString(0));
+                user.put("SchemeID", cursor.getString(1));
+                user.put("Name", cursor.getString(2));
+                user.put("Description", cursor.getString(3));
                 myMap.add(x,user);
             }
         }
@@ -262,9 +293,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return myMap;
     }
 
+
     public ArrayList<String> getAvailableRewards(){
         ArrayList<String> schemeArray = new ArrayList<String>();
-        String selectQuery = "SELECT Cost, SchemeID, Name FROM " + TABLE_REWARDS;
+        String selectQuery = "SELECT Cost, SchemeID, Name, Description FROM " + TABLE_REWARDS;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

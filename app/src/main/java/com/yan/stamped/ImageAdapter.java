@@ -74,11 +74,16 @@ public class ImageAdapter extends BaseAdapter {
                 holder = new LinearLayout(mContext);
                 LL = new CardView(mContext);
                 holder.setOrientation(LinearLayout.VERTICAL);
-                holder.setMinimumHeight(200);
-                LL.setCardBackgroundColor(Color.rgb(255, 64, 129));
-                LL.setRadius(20);
-                LL.setMinimumHeight(200);
-                holder.setGravity(Gravity.BOTTOM);
+                holder.setMinimumHeight(150);
+                if(getStampCount(position) >= Integer.parseInt(db.getRewards().get(position).get("Cost"))) {
+
+                    LL.setCardBackgroundColor(Color.rgb(255, 235, 59));
+                } else {
+                    LL.setCardBackgroundColor(Color.rgb(197, 202, 233));
+                }
+                LL.setRadius(100);
+                LL.setMinimumHeight(150);
+                holder.setGravity(Gravity.CENTER);
                 imageView = new ImageView(mContext);
                 tv = new TextView(mContext);
                 tv.setText(getName(position));
@@ -89,7 +94,7 @@ public class ImageAdapter extends BaseAdapter {
                 st = new TextView(mContext);
                 st.setText(getStampCount(position).toString());
                 //st.setText("0");
-                st.setTextSize(40);
+                st.setTextSize(30);
                 st.setGravity(Gravity.CENTER);
                 st.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));

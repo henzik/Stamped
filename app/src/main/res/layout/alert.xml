@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="vertical" android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:padding="8dp"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Reward Name"
+                android:id="@+id/reward_name"
+                android:textColor="@color/abc_primary_text_material_light" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Description\nDescribe\nDescribe"
+                android:id="@+id/reward_description"
+                android:maxLines="3"
+                android:textColor="@color/abc_secondary_text_material_light"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="x stamps"
+                    android:id="@+id/reward_cost"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:textColor="@color/accent"
+                    android:layout_gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:text=" will be taken from your account"
+                    android:id="@+id/textView9"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_vertical" />
+            </LinearLayout>
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="TAP THE READER"
+                android:id="@+id/button4"
+                android:layout_gravity="right"
+                android:background="@drawable/button_background_light"
+                android:textColor="@color/material_blue_grey_800"
+                android:layout_marginTop="8dp"
+                android:enabled="false" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:id="@+id/reward_cancel"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_background"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="8dp"
+                android:enabled="true" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

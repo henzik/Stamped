@@ -1,17 +1,35 @@
 package com.yan.stamped;
 
+import android.app.ActionBar;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+
+import com.beardedhen.androidbootstrap.BootstrapCircleThumbnail;
+import com.squareup.picasso.Picasso;
+
+import java.io.InputStream;
+import java.net.URL;
 
 
 public class RewardClaim extends ActionBarActivity {
+
+    ImageView thumb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reward_claim);
+        getSupportActionBar().hide();
+        thumb = (ImageView) findViewById(R.id.imageView2);
+        String url = "http://www.clker.com/cliparts/9/f/X/3/W/X/black-wifi-icon-hi.png";
+        Picasso.with(getApplicationContext()).load(url).into(thumb);
     }
 
 

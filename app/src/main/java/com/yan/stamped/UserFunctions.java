@@ -5,12 +5,14 @@ package com.yan.stamped;
  */
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.util.Log;
 
@@ -30,6 +32,8 @@ public class UserFunctions {
     private static String rewards_tag = "pullrewards";
 
     private static String rewardmessage = "";
+
+    private static Vector<AlertDialog> dialogs = new Vector<AlertDialog>();
 
     // constructor
     public UserFunctions(){
@@ -148,6 +152,17 @@ public class UserFunctions {
     public String getRewardMessage() {
 
         return rewardmessage;
+    }
+
+    public void addAlert(AlertDialog dialog) {
+        dialogs.add(dialog);
+    }
+
+    public void dismissAllDialogs() {
+        for (AlertDialog dialog : dialogs)
+            if (dialog.isShowing()) dialog.dismiss();
+
+        dialogs.clear();
     }
 
     public void sync(final Context context) {

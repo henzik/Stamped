@@ -2,6 +2,13 @@
 <items version="2" >
 
     <item
+        jar="C:\Users\Henrik\AndroidStudioProjects\Stamped\app\build\intermediates\exploded-aar\com.beardedhen\androidbootstrap\1.2.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="1a48b2ef3121fbb284a24f04b1617066d618800f">
+        <dex dex="C:\Users\Henrik\AndroidStudioProjects\Stamped\app\build\intermediates\pre-dexed\debug\classes-a8626e056642647a4853e4564dbd7e17673b9fcc.jar" />
+    </item>
+    <item
         jar="C:\Users\Henrik\AndroidStudioProjects\Stamped\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\classes.jar"
         jumboMode="false"
         revision="21.1.1"
@@ -21,6 +28,13 @@
         revision="21.1.1"
         sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
         <dex dex="C:\Users\Henrik\AndroidStudioProjects\Stamped\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-988848aa814fabe90aec7b9e8e3135cf22faf387.jar" />
+    </item>
+    <item
+        jar="C:\Users\Henrik\.gradle\caches\modules-2\files-2.1\com.squareup.picasso\picasso\2.5.0\7ff0e000d1e27e356567f56c92af3b8ab912636f\picasso-2.5.0.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="7ff0e000d1e27e356567f56c92af3b8ab912636f">
+        <dex dex="C:\Users\Henrik\AndroidStudioProjects\Stamped\app\build\intermediates\pre-dexed\debug\picasso-2.5.0-8111ec86a446e013e1f7b213fd80ee8c2f1bdc66.jar" />
     </item>
     <item
         jar="C:\Users\Henrik\AndroidStudioProjects\Stamped\app\build\intermediates\exploded-aar\com.shamanland\fab\0.0.6\classes.jar"
